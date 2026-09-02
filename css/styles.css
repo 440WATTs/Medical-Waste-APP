@@ -385,4 +385,3 @@ select.settings-value { background: transparent; border: none; text-align: right
 }
 .filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 [data-theme="dark"] .filter-chip.active, :root:not([data-theme="light"]) .filter-chip.active { color: #08191B; }
-
