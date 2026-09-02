@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>MedWaste AI</title>
+<meta name="theme-color" content="#12656F" />
+<link rel="manifest" href="manifest.json" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ WARD HOME ============ -->
+  <section id="screen-home" class="screen active">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 8Z"/><path d="M9 8V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/><path d="M12 12v6M9 15h6"/></svg>
+        </div>
+        <div>
+          <div class="brand-name">MedWaste AI</div>
+          <div class="brand-sub" id="home-ward-label">ICU-2 &middot; Ward console</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36A5.4 5.4 0 0 1 12 3Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn" id="open-settings" aria-label="Settings" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="sync-banner"></div>
+
+    <div class="cta-block">
+      <div class="cta-ring" id="request-pickup" role="button" tabindex="0">
+        <div class="cta-core">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h2l1.6-9h10.8L19 17h2"/><circle cx="8" cy="19.5" r="1.6"/><circle cx="17" cy="19.5" r="1.6"/><path d="M12 4v6M9.5 7.5 12 10l2.5-2.5"/></svg>
+          <span>Request pickup</span>
+          <small id="pickup-eta">Nearest unit 4 min away</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Today in this ward</div>
+    <div class="stat-grid" id="home-stats"></div>
+
+    <div class="section-label">Open alerts</div>
+    <div id="home-alerts"></div>
+
+    <div class="section-label">Recent decisions</div>
+    <div class="card" id="home-recent"></div>
+  </section>
+
+  <!-- ============ INTAKE ============ -->
+  <section id="screen-intake" class="screen">
+    <div class="topbar"><div class="brand-name">Intake</div><span style="width:36px"></span></div>
+
+    <div class="card card-pad">
+      <p style="margin:0 0 12px;font-size:13.5px;color:var(--text-muted);line-height:1.5;">
+        Each item passing the vision hood runs the detector, fuses the metal and load-cell
+        readings, then applies the segregation rules. Run one to see which rule fires.
+      </p>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-run-intake">Run intake</button>
+      </div>
+    </div>
+
+    <div class="section-label">Robot</div>
+    <div class="card">
+      <div class="settings-row" style="padding:13px 15px;">
+        <div class="settings-label">Unit</div>
+        <select class="settings-value mono" id="intake-robot"></select>
+      </div>
+      <div class="settings-row" style="padding:13px 15px;">
+        <div class="settings-label">Model status</div>
+        <select class="settings-value mono" id="intake-model-status">
+          <option value="ready">ready</option>
+          <option value="degraded">degraded</option>
+          <option value="unavailable">unavailable</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section-label">Last decision</div>
+    <div id="intake-result"></div>
+  </section>
+
+  <!-- ============ FLEET ============ -->
+  <section id="screen-fleet" class="screen">
+    <div class="topbar"><div class="brand-name">Fleet</div><span style="width:36px"></span></div>
+    <div id="fleet-list"></div>
+  </section>
+
+  <!-- ============ LEDGER ============ -->
+  <section id="screen-ledger" class="screen">
+    <div class="topbar">
+      <div class="brand-name">Ledger</div>
+      <button class="icon-btn" id="btn-verify-chain" aria-label="Verify chain" title="Verify hash chain">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a3 3 0 0 1 3-3h1a3 3 0 0 1 0 6h-1"/><path d="M15 12a3 3 0 0 1-3 3h-1a3 3 0 0 1 0-6h1"/></svg>
+      </button>
+    </div>
+    <div class="search-bar card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg><input type="text" id="ledger-search" placeholder="Search by item, bin or rule" /></div>
+    <div class="filter-row" id="ledger-filters"></div>
+    <div id="ledger-list"></div>
+  </section>
+
+  <!-- ============ REVIEW QUEUE ============ -->
+  <section id="screen-review" class="screen">
+    <div class="topbar"><div class="brand-name">Review queue</div><span style="width:36px"></span></div>
+    <div class="card card-pad" style="margin-bottom:14px;">
+      <p style="margin:0;font-size:13px;color:var(--text-muted);line-height:1.5;">
+        Items the machine refused to route on its own. Every correction here is also a labelled
+        training example.
+      </p>
+    </div>
+    <div id="review-list"></div>
+  </section>
+
+  <!-- ============ ROBOT DETAIL (overlay) ============ -->
+  <section id="screen-robot" class="screen">
+    <div class="topbar">
+      <button class="icon-btn" id="robot-back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="brand-name" id="robot-title">Unit</div>
+      <span style="width:36px"></span>
+    </div>
+    <div id="robot-body"></div>
+  </section>
+
+  <!-- ============ RECORD DETAIL (overlay) ============ -->
+  <section id="screen-record" class="screen">
+    <div class="topbar">
+      <button class="icon-btn" id="record-back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="brand-name">Record</div>
+      <span style="width:36px"></span>
+    </div>
+    <div id="record-body"></div>
+  </section>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-screen="home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>Home
+    </button>
+    <button class="nav-item" data-screen="intake">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V6a2 2 0 0 1 2-2h2M4 16v2a2 2 0 0 0 2 2h2M20 8V6a2 2 0 0 0-2-2h-2M20 16v2a2 2 0 0 1-2 2h-2"/><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>Intake
+    </button>
+    <button class="nav-item" data-screen="fleet">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="10" rx="2"/><circle cx="8" cy="19" r="1.6"/><circle cx="16" cy="19" r="1.6"/><path d="M9 7V5h6v2"/></svg>Fleet
+    </button>
+    <button class="nav-item" data-screen="ledger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M8 10h8M8 14h8M8 18h5"/></svg>Ledger
+    </button>
+    <button class="nav-item" data-screen="review">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17h.01"/></svg>Review
+      <span class="nav-badge hidden" id="review-badge">0</span>
+    </button>
+  </nav>
+
+  <div class="snackbar" id="snackbar"></div>
+  <div class="sheet-backdrop" id="sheet-backdrop"></div>
+  <div class="bottom-sheet" id="bottom-sheet">
+    <div class="sheet-handle"></div>
+    <div id="sheet-content"></div>
+  </div>
+
+</div>
+
+<script src="js/waste-db.js"></script>
+<script src="js/policy.js"></script>
+<script src="js/ledger.js"></script>
+<script src="js/mock-robot.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
